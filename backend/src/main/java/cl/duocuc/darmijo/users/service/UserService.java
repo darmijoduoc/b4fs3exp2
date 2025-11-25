@@ -76,8 +76,8 @@ public class UserService {
     
     public User getUserByEmail(String email) throws ResourceNotFoundException {
         Optional<User> user = userRepository.findByEmail(email);
-        if(user.isEmpty()) {throw new ResourceNotFoundException("User not found");
-        
+        if(user.isEmpty()) {
+            throw new ResourceNotFoundException("User not found");
         }
         return user.get();
     }
