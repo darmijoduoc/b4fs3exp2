@@ -27,9 +27,9 @@ public class ResultsController {
             String[] statuses = {"completed", "pending", "in_progress"};
             for (int i = 1; i <= 5; i++) {
                 String nif = String.format("%08d-%d", labId * 100 + i, (labId + i) % 10);
-                String patientName = "Patient " + labId + "-" + i;
+                String patientName = "Paciente " + labId + "-" + i;
                 long date = System.currentTimeMillis();
-                String data = "Auto-generated result " + i + " for lab " + labId;
+                String data = "Resultado " + i + " for lab " + labId;
                 String status = statuses[(i - 1) % statuses.length];
                 this.postResult(new CreateResultParams(labId, nif, patientName, date, data, status));
             }

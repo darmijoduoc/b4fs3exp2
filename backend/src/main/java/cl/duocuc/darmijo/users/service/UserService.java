@@ -74,6 +74,14 @@ public class UserService {
         return optionalUser;
     }
     
+    public User getUserByEmail(String email) throws ResourceNotFoundException {
+        Optional<User> user = userRepository.findByEmail(email);
+        if(user.isEmpty()) {throw new ResourceNotFoundException("User not found");
+        
+        }
+        return user.get();
+    }
+    
     public Optional<User> getUserByUlid(String ulid) {
         return userRepository.findByUlid(ulid);
     }
@@ -110,6 +118,17 @@ public class UserService {
     private boolean checkPassword(String rawPassword, String hashedPassword) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return passwordEncoder.matches(rawPassword, hashedPassword);
+    }
+    
+    public String resetPassword(long id, String newPassword) throws AuthorityException {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if(optionalUser.isEmpty()) {
+            throw new AuthorityException("Usuario no encontrado");
+        }
+        User user = optionalUser.get();
+        user.setHashedPassword(hashPassword(newPassword));
+        userRepository.save(user);
+        return "Password reset successfully";
     }
     
 }

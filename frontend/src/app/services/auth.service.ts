@@ -35,4 +35,8 @@ export class AuthService {
       return this.http.get<Session>(`${this.apiUrl}/refresh`);
   }
 
+  forgotPassword(email: string): Observable<{ message: string }> {
+      return this.http.post<{ message: string }>(`${this.apiUrl}/forgot_password`, { email });
+  }
+
 }

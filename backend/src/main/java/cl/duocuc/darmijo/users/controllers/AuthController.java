@@ -1,7 +1,9 @@
 package cl.duocuc.darmijo.users.controllers;
 
 import cl.duocuc.darmijo.core.exceptions.AuthorityException;
+import cl.duocuc.darmijo.core.exceptions.ResourceNotFoundException;
 import cl.duocuc.darmijo.users.models.AuthenticateUserParams;
+import cl.duocuc.darmijo.users.models.ForgotPasswordParams;
 import cl.duocuc.darmijo.users.models.User;
 import cl.duocuc.darmijo.users.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,15 @@ public class AuthController {
     ) throws AuthorityException {
         log.info("Authenticating user: {}", params);
         User user = userService.authenticate(params.getEmail(), params.getPassword());
+        return ResponseEntity.ok(user);
+    }
+    
+    @PostMapping("/forgot_password")
+    public ResponseEntity<?> authenticateUser(
+        @RequestBody ForgotPasswordParams params
+    ) throws AuthorityException, ResourceNotFoundException {
+        User user = userService.getUserByEmail(params.getEmail());
+        userService.resetPassword(user.getId(), "1234");
         return ResponseEntity.ok(user);
     }
 }

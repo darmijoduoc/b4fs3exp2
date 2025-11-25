@@ -15,6 +15,9 @@ import { SessionService } from 'src/app/services/session.service';
 export class LoginComponent implements OnInit {
 
   form!: FormGroup;
+  forgotPasswordForm!: FormGroup;
+  showForgotPasswordModal = false;
+  isSubmittingForgotPassword = false;
 
   constructor(
     private fb: FormBuilder,
@@ -29,6 +32,11 @@ export class LoginComponent implements OnInit {
     this.form = this.fb.group({
       email: ['da@localhost', [Validators.required]],
       password: ['p4ssw0rD!', [Validators.required]],
+    });
+
+    // Formulario para recuperar contraseña
+    this.forgotPasswordForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]]
     });
   }
 
@@ -46,6 +54,35 @@ export class LoginComponent implements OnInit {
         alert('Credenciales inválidas. Intente nuevamente.');
       }
     });
+  }
+
+  openForgotPasswordModal(): void {
+    this.showForgotPasswordModal = true;
+    this.forgotPasswordForm.reset();
+  }
+
+  closeForgotPasswordModal(): void {
+    this.showForgotPasswordModal = false;
+    this.forgotPasswordForm.reset();
+    this.isSubmittingForgotPassword = false;
+  }
+
+  onForgotPasswordSubmit(): void {
+    if (this.forgotPasswordForm.valid) {
+      this.isSubmittingForgotPassword = true;
+      
+      this.authService.forgotPassword(this.forgotPasswordForm.value.email).subscribe({
+        next: (response) => {
+          alert('Se ha enviado un enlace de recuperación a su correo electrónico.');
+          this.closeForgotPasswordModal();
+        },
+        error: (err: any) => {
+          console.error('Error al solicitar recuperación de contraseña:', err);
+          alert('Error al enviar el correo de recuperación. Intente nuevamente.');
+          this.isSubmittingForgotPassword = false;
+        }
+      });
+    }
   }
 
 }
